@@ -6,4 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './admin-change-role.page.html',
   styleUrl: './admin-change-role.page.css',
 })
-export class AdminChangeRole {}
+export class AdminChangeRolePage {}
