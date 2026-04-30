@@ -1,0 +1,12 @@
+# .gitignore ottimizzato per applicazioni dotnet 10
+
+bin
+obj
+.DS_Store
+
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.mdf
+*.ldf
