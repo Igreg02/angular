@@ -23,6 +23,7 @@
                     @for(role of roles; track role){
                         <option [value]="role"> {{role}}</option>
                     }
+                    
                 </select>
             </div>
 
@@ -30,6 +31,11 @@
                 <button class="btn btn-primary" type ="submit" [disabled] = "isSubmitting()">
                     {{ isSubmitting() ? "Aggiornamento..." : "Aggiorna ruolo" }}
                 </button>
+            </div>
+
+            </form>
+        </article>
+
         <article class="card">
             <h2> Utenti demo</h2>
             <div class="list">
@@ -39,3 +45,4 @@
             </div>
         </article>
     </div>
+</section>

@@ -1,1 +1,38 @@
-<p>navbar works!</p>
+<header class="navbar-shell">
+  <div class="container navbar">
+    
+    <a routerLink="/dashboard" class="brand">Rubrica Angular 21</a>
+
+    @if (isAuthenticated()) {
+      <nav class="links">
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/interests" routerLinkActive="active">Interessi</a>
+
+        @if (isAdmin()) {
+          <a routerLink="/admin/change-role" routerLinkActive="active">
+            Cambio ruolo
+          </a>
+        }
+      </nav>
+
+      <div class="user box">
+        <div>
+          <strong>{{ user()?.nomeCompleto }}</strong>
+          <div class="muted small">
+            {{ user()?.email }} * {{ user()?.role }}
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" type="button" (click)="logout()">
+          Logout
+        </button>
+      </div>
+    } @else {
+      <nav class="links">
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+        <a routerLink="/register" routerLinkActive="active">Registrazione</a>
+      </nav>
+    }
+
+  </div>
+</header>

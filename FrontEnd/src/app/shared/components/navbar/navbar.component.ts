@@ -7,7 +7,6 @@ import { AuthService } from '../../../services/auth.service';
   standalone:true,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
 })
 export class NavbarComponent{
   private readonly Authservice = inject(AuthService);

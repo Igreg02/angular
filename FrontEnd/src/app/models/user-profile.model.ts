@@ -1,7 +1,6 @@
-export interface UserProfile
-{
-    id : string;
+export interface UserProfile{
+    id          : string,
     nomeCompleto: string;
-    email: string;
+    email       : string;
     phoneNumber?: string | null;
 }

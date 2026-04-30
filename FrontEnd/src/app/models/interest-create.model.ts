@@ -1,4 +1,3 @@
-export interface InterestCreateRequest
-{
+export interface InterestCreateRequest{
     nome: string;
 }

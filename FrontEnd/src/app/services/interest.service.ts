@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { enviroment } from '../../enviroments/enviroment';
+import { environment } from '../../environment/environments';
 import { Interest } from '../models/interest.models';
 import { InterestCreateRequest } from '../models/interest-create.model';
 
@@ -10,7 +10,7 @@ import { InterestCreateRequest } from '../models/interest-create.model';
 })
 export class InterestService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${enviroment.apiBaseUrl}/interests`;
+  private readonly baseUrl = `${environment.apiBaseUrl}/interests`;
 
   getAll(): Observable<Interest[]>
   {

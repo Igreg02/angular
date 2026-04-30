@@ -1,19 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AdminUserService } from '../../services/admin-user.service';
+import { AdminUsersService } from '../../services/admin-users.service';
 
 @Component({
   selector: 'app-admin-change-role',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './admin-change-role.page.html',
-  styleUrl: './admin-change-role.page.css',
+  templateUrl: './admin-change-role.page.html'
 })
 export class AdminChangeRolePage {
 
   private readonly fb = inject(FormBuilder);
-  private readonly adminUsersService = inject(AdminUserService);
+  private readonly adminUsersService = inject(AdminUsersService);
 
   readonly isSubmitting = signal(false);
   readonly successMessage = signal('');

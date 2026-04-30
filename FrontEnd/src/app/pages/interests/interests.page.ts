@@ -9,7 +9,7 @@ import { Interest } from '../../models/interest.models';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './interests.page.html',
-  styleUrl: './interests.page.css',
+  styleUrl: './interests.page.css'
 })
 export class InterestsPage {
 

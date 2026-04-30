@@ -3,11 +3,11 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "d09bea4b-6258-451a-8238-b587f257cc6c"
+    "analytics": "b6a52d23-4f7f-4b8a-bf82-ba654960335e"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "rubrica-angular": {
+    "rubrica-angular21-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
@@ -95,10 +95,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "rubrica-angular:build:production"
+              "buildTarget": "rubrica-angular21-frontend:build:production"
             },
             "development": {
-              "buildTarget": "rubrica-angular:build:development"
+              "buildTarget": "rubrica-angular21-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

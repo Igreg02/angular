@@ -6,8 +6,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-dashboard',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './dashboard.page.html',
-  styleUrl: './dashboard.page.css',
+  templateUrl: './dashboard.page.html'
 })
 export class DashboardPage {
   private readonly authService = inject(AuthService);
