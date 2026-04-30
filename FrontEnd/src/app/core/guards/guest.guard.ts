@@ -6,7 +6,7 @@ export const guestGuard: CanActivateFn = (route, state) => {
 
   const authservice = inject(AuthService);
   const router      = inject(Router);
-  if(authservice.isAuthenticated())
+  if(!authservice.isAuthenticated())
   {
     return true
   }
