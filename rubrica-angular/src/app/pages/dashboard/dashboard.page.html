@@ -1,1 +1,47 @@
-<p>dashboard works!</p>
+<section>
+    <h1 class="page-title">Dashboards</h1>
+    <p class="page-subtitle"> Panoramica dell'utente autenticato e dei permessi disponibili</p>
+
+    <div class="grid grid-2">
+        <article class="card">
+            <h2> Sessione corrente</h2>
+            <div class="list">
+                <div class="list-item"><span>Nome</span><strong>{{user()?.nomeCompleto}}</strong></div>
+                <div class="list-item"><span>Email</span><strong>{{user()?.email}}</strong></div>
+                <div class="list-item"><span>Ruolo</span><span class="badge">{{user()?.nomeCompleto}}</span></div>
+                <div class="list-item"><span>UserId</span><strong>{{user()?.userId}}</strong></div>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Azioni disponibili</h2>
+            <div class="list">
+                <div class="list-item">
+                    <div>
+                        <strong>Gestione interessi</strong>
+                        <div class="muted">Lista personale + CRUD in base al Ruolo</div>
+                    </div>
+                    <a class="btn btn-primary" routerLink="/interests">Apri</a>
+                </div>
+
+                @if(isAdmin()){
+                    <div class="list-item">
+                        <div>
+                            <strong> Cambio Ruolo utenti</strong>
+                            <div class="muted"> Endpoint solo Admin</div>
+                        </div>
+                        <a class="btn btn-primary" routerLink="/admin/change-role">Apri</a>
+                    </div>
+                }
+            </div>
+
+            <div class="alert alert-warning" style="margin-top:1rem;">
+                @if(canEditInterests()){
+                    Hai permessi per creare, modificare ed eliminare interessi.
+                } @else{
+                    Hai accesso in sola lettura alla tua lista interessi
+                }
+            </div>
+        </article>
+    </div>
+</section>

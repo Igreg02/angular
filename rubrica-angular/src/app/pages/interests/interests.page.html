@@ -1,1 +1,69 @@
-<p>interests works!</p>
+<section>
+    <h1 class="page-title">I miei interessi</h1>
+    <p class="page-subtitle"> il backend restituisce e modifica soltanto gli interessi legati all'utente autenticato</p>
+
+     @if(errorMessage()){
+        <div class="alert alert-warning">{{ errorMessage()}}</div>
+     }
+
+     @if(successMessage()){
+        <div class="alert alert-success">{{ successMessage() }}</div>
+     }
+
+     <div class="grid grid-2">
+        <article class="card">
+            <h2>Lista interessi</h2>
+
+            @if(isLoading()){
+                <p class="muted"> Caricamento in corso...</p>
+            } @else if(interests().length === 0){
+                <p class="muted"> Nessun interesse presente</p>
+            } @else{
+                <div class="list">
+                    @for(item of interests(); track trackById($index, item)){
+                        <div class="list-item">
+                            <div>
+                                <strong>{{ item.nome }}</strong>
+                                <div class="muted"> ID: {{ item.id }}</div>
+                            </div>
+
+                            @if(canEdit()){
+                                <div class="btn-row">
+                                    <button class="btn btn-secondary" type="button" (click)="startEdit(item)"> Modifica</button>
+                                    <button class="btn btn-danger" type="button" (click)="deleteEdit(item)"> Elimina</button>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="card">
+            <h2> {{ editingId() ? "Modifica interesse" : "Nuovo interesse" }}</h2>
+
+            @if(!canEdit()){
+                <div class="alert alert-warning">
+                    Il tuo ruolo non può creare, modificare o eliminare interessi.
+                </div>
+            }
+
+            <form class="form-grid" [formGroup]="form" (ngSubmit)="submit()">
+                <div>
+                    <label for="nome"> Nome interesse</label>
+                    <input id="nome" type="text" formControlName="nome" [disabled]="!canEdit()"/>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-primary" type="submit" [disabled]="isSubmitting() || !canEdit()">
+                     {{ isSubmitting() ? "Salvataggio.." : (editingId() ? "Aggiorna" : "Crea") }}
+                    </button>
+
+                    @if (editingId()){
+                        <button class="btn btn-secondary" type="button" (click)="resetForm()">Annulla</button>
+                    }
+                </div>
+            </form>
+        </article>
+     </div>
+</section>

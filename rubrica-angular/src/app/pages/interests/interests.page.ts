@@ -1,20 +1,21 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { InterestService } from '../../services/interest.service';
-import { Interest } from '../../models/interest.model';
+import { Interest } from '../../models/interest.models';
 
 @Component({
   selector: 'app-interests',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './interests.page.html',
+  styleUrl: './interests.page.css',
 })
 export class InterestsPage {
+
   private readonly fb = inject(FormBuilder);
-  private readonly authservice = inject(AuthService);
-  private readonly InterestService = inject(InterestService);
+  private readonly authService = inject(AuthService);
+  private readonly interestService = inject(InterestService);
 
   readonly interests = signal<Interest[]>([]);
   readonly isLoading = signal(false);
@@ -24,7 +25,7 @@ export class InterestsPage {
   readonly editingId = signal<number | null>(null);
 
   readonly form = this.fb.nonNullable.group({
-    nome: ['', [Validators.required, Validators.maxLength(100)]],
+    nome: ['', [Validators.required, Validators.maxLength(100)]]
   });
 
   constructor() {
@@ -32,13 +33,14 @@ export class InterestsPage {
   }
 
   canEdit(): boolean {
-    return this.authservice.hasAnyRole(['Admin', 'Editor']);
+    return this.authService.hasAnyRole(['Admin', 'Editor']);
   }
+
   loadInterests(): void {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    this.InterestService.getAll().subscribe({
+    this.interestService.getAll().subscribe({
       next: (items) => {
         this.interests.set(items);
         this.isLoading.set(false);
@@ -46,9 +48,9 @@ export class InterestsPage {
       error: (error: unknown) => {
         this.isLoading.set(false);
         this.errorMessage.set(
-          this.extractErrorMessage(error, 'Impossibile caricare gli interessi.'),
+          this.extractErrorMessage(error, 'Impossibile caricare gli interessi')
         );
-      },
+      }
     });
   }
 
@@ -57,34 +59,42 @@ export class InterestsPage {
       this.form.markAllAsTouched();
       return;
     }
+
     this.isSubmitting.set(true);
     this.errorMessage.set('');
     this.successMessage.set('');
 
+    const formValue = this.form.getRawValue();
+
     const request$ = this.editingId()
-      ? this.InterestService.update(this.editingId()!, this.form.getRawValue())
-      : this.InterestService.create(this.form.getRawValue());
+      ? this.interestService.update(this.editingId()!, formValue)
+      : this.interestService.create(formValue);
 
-
-    request$.subcribe({
+    request$.subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.successMessage.set(this.editingId() ? 'Interesse aggirnato.' : 'Interesse creato.');
+        this.successMessage.set(
+          this.editingId() ? 'Interesse aggiornato' : 'Interesse creato'
+        );
         this.resetForm();
         this.loadInterests();
       },
-      error: (erro: unknown) => {
+      error: (error: unknown) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(this.extractErrorMessage(error, 'Operazione non riuscita'));
-      },
+        this.errorMessage.set(
+          this.extractErrorMessage(error, 'Operazione non riuscita.')
+        );
+      }
     });
   }
+
   startEdit(item: Interest): void {
-    if (!this.canEdit()) {
-      return;
-    }
+    if (!this.canEdit()) return;
+
     this.editingId.set(item.id);
-    this.form.patchValue({ nome: item.nome });
+    this.form.patchValue({
+      nome: item.nome
+    })
     this.successMessage.set('');
     this.errorMessage.set('');
   }
@@ -94,7 +104,7 @@ export class InterestsPage {
       return;
     }
 
-    const confirmed = confirm(`Elimanare l'interesse \`${item.nome}\"?`);
+    const confirmed = confirm(`Eliminare l'interesse \"${item.nome}\"?`)
 
     if (!confirmed) {
       return;
@@ -103,34 +113,35 @@ export class InterestsPage {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    this.InterestService.delete(item.id).subscribe
-      ({
-        next: () => {
-          this.successMessage.set('Interesse eliminato.');
-          if (this.editingId() === item.id) {
-            this.resetForm();
-          }
-          this.loadInterests();
-        },
-        error: (error : unknown) => 
-          {
-            this.errorMessage.set(this.extractErrorMessage(error, 'Eliminazione non riuscita.'));
-          }
-      });
+    this.interestService.delete(item.id).subscribe({
+      next: () => {
+        this.successMessage.set('Interesse eliminato');
+        if (this.editingId() === item.id) {
+          this.resetForm();
+        }
+
+        this.loadInterests();
+      },
+      error: (error: unknown) => {
+        this.errorMessage.set(this.extractErrorMessage(error, 'Eliminazione non riuscita'));
+
+      }
+    });
   }
 
   resetForm(): void {
+    this.form.reset({ nome: '' });
     this.editingId.set(null);
-    this.form.reset({ nome : '' });
   }
 
-  private extractErrorMessage(error: unknown, fallback: string): string 
-  {
-    if (error instanceof HttpErrorResponse)
-    {
-      return error.error?.message ?? fallback;
-    }
-    return fallback;
+  trackbyId(_: number, item: Interest): number {
+    return item.id
   }
-  
+
+  private extractErrorMessage(error: unknown, fallback: string): string {
+    if (error instanceof Error) {
+      return error?.message ?? fallback;
+    }
+    return fallback
+  }
 }

@@ -1,1 +1,47 @@
-<p>register works!</p>
+<section>
+    <h1 class="page-title"> Registrazione</h1>
+    <p class="page-subtitle"> Il backend assegna automaticamente il ruolo <strong> User</strong> ai nuovi account</p>
+
+    <div class="card">
+        @if(successMessage()){
+            <div class="alert alert-success"> {{ successMessage() }}</div>
+        }
+
+        @if(errorMessage()){
+            <div class="alert alert-warning"> {{ errorMessage() }}</div>
+        }
+
+        <form class="form-grid" [formGroup]="form" (ngSubmit)="submit()">
+            <div class="grid grid-2">
+                <div>
+                    <label for="nomeCompleto"> Nome completo</label>
+                    <input id="nomeCompleto" type="text" formControlName="nomeCompleto" />
+                </div>
+
+                <div>
+                    <label for="phoneNumber"> Telefono</label>
+                    <input id="phoneNumber" type="text" formControlName="phoneNumber" />
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div>
+                    <label for="email"> Email</label>
+                    <input id="email" type="text" formControlName="email" />
+                </div>
+
+                <div>
+                    <label for="password"> Password</label>
+                    <input id="password" type="password" formControlName="password" />
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-primary" type="submit" [disabled]="isLoading()">
+                    {{ isLoading() ? "Registrazione" : "Registrati" }}
+                </button>
+                <a class="btn btn-secondary" routerLink="/login">Torna al login</a>
+            </div>
+        </form>
+    </div>
+</section>

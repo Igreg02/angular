@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.page.html',
+  styleUrl: './login.page.css',
 })
 export class LoginPage {
   private readonly fb = inject(FormBuilder);
@@ -20,7 +21,7 @@ export class LoginPage {
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
+    password: ['', Validators.required]
   });
 
   submit(): void {
@@ -28,6 +29,8 @@ export class LoginPage {
       this.form.markAllAsTouched();
       return;
     }
+
+
     this.isLoading.set(true);
     this.errorMessage.set('');
 
@@ -36,17 +39,18 @@ export class LoginPage {
         this.isLoading.set(false);
         void this.router.navigate(['/dashboard']);
       },
-      error: (error: unknown) => {
+      error: (error:unknown) => {
         this.isLoading.set(false);
-        this.errorMessage.set(this.extractErrorMessage(error, 'Login non riuscito'));
-      },
-    });
+        this.errorMessage.set(this.extractErrorMessage(error, 'Login non riusciuto'));
+      }
+    })
   }
-
-  private extractErrorMessage(error: unknown, fallback: string): string {
-    if (error instanceof HttpErrorResponse) {
+   
+  private extractErrorMessage(error:unknown, fallback: string): string {
+    if(error instanceof HttpErrorResponse){
       return error.error?.message ?? fallback;
     }
+
     return fallback;
   }
 }

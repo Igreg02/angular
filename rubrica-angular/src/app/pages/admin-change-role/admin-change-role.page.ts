@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminUserService } from '../../services/admin-user.service';
 
@@ -9,8 +8,10 @@ import { AdminUserService } from '../../services/admin-user.service';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './admin-change-role.page.html',
+  styleUrl: './admin-change-role.page.css',
 })
 export class AdminChangeRolePage {
+
   private readonly fb = inject(FormBuilder);
   private readonly adminUsersService = inject(AdminUserService);
 
@@ -21,11 +22,11 @@ export class AdminChangeRolePage {
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    newRole: ['User', [Validators.required]],
+    newRole: ['User', [Validators.required]]
   });
 
   submit(): void {
-    if (this.form.valid) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -34,22 +35,24 @@ export class AdminChangeRolePage {
     this.successMessage.set('');
     this.errorMessage.set('');
 
-    this.AdminUserService.changeRole(this.form.getRawValue()).subscribe({
+    this.adminUsersService.changeRole(this.form.getRawValue()).subscribe({
       next: (response) => {
         this.isSubmitting.set(false);
-        this.successMessage.set(`${response.message} Nuovo Ruolo: ${response.role}`);
+        this.successMessage.set(`${response.message} Nuovo Ruolo:${response.role}`)
       },
-      error: (error: unknown) => {
+      error: (error: unknown) =>{
         this.isSubmitting.set(false);
         this.errorMessage.set(this.extractErrorMessage(error));
-      },
+      }
     });
   }
 
-  private extractErrorMessage(error: unknown): string {
-    if (error instanceof HttpErrorResponse) {
-      return error.error?.message ?? 'Cambio ruolo non riuscito.';
+  private extractErrorMessage(error:unknown):string{
+    if(error instanceof HttpErrorResponse)
+    {
+      return error.error?.message?? 'Cambio ruolo non riuscito';
     }
-    return 'Cambio ruolo non riuscito.';
+
+    return 'Cambio ruolo non riuscito';
   }
 }

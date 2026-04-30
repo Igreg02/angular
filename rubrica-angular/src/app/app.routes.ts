@@ -1,40 +1,44 @@
 import { Routes } from '@angular/router';
-import { LoginPage } from './pages/login/login.page';
+import { authGuard } from './core/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
     {
-        path:'',
+        path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard',
+        redirectTo: 'dashboard'
     },
     {
-        path:'login',
+        path: 'login',
         canActivate: [guestGuard],
-        loadComponent:()=> import('./pages/login/login.page').then((m) => m.LoginPage)
+        loadComponent: () => import('./pages/login/login.page').then((m) => m.LoginPage) // load component carica le pagine in lazyloagin nel modello standalone di angular
     },
     {
-        path:'register',
+        path: 'register',
         canActivate: [guestGuard],
-        loadComponent:()=> import('./pages/register/register.page').then((m) => m.RegisterPage)
+        loadComponent: () => import('./pages/register/register.page').then((m) => m.RegisterPage)
     },
     {
-        path:'dashboard',
+        path: 'dashboard',
         canActivate: [authGuard],
-        loadComponent:()=> import('./pages/dashboard/dashboard.page').then((m) => m.DashboardPage)
+        loadComponent: () => import('./pages/dashboard/dashboard.page').then((m) => m.DashboardPage)
     },
     {
-        path:'interests',
+        path: 'interests',
         canActivate: [authGuard],
-        loadComponent:()=> import('./pages/interests/interests.page').then((m) => m.InterestsPage)
+        loadComponent: () => import('./pages/interests/interests.page').then((m) => m.InterestsPage)
     },
     {
-        path:'admin/change-role',
+        path: 'admin/change-role',
         canActivate: [authGuard, roleGuard],
         data:{ roles:['Admin'] },
-        loadComponent:()=> import('./pages/admin-change-role/admin-change-role.page').then((m) => m.AdminChangeRolePage)
+        loadComponent: () => import('./pages/admin-change-role/admin-change-role.page').then((m) => m.AdminChangeRolePage)
     },
     {
         path: '**',
         redirectTo: 'dashboard'
-    }
+    },
+
+
 ];

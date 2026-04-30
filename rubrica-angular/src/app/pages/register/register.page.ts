@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.page.html',
+  styleUrl: './register.page.css',
 })
 export class RegisterPage {
   private readonly fb = inject(FormBuilder);
@@ -16,15 +17,16 @@ export class RegisterPage {
   private readonly router = inject(Router);
 
   readonly isLoading = signal(false);
-  readonly succesMessage = signal('');
+  readonly successMessage = signal('');
   readonly errorMessage = signal('');
+
 
   readonly form = this.fb.group({
     email: this.fb.nonNullable.control('', [Validators.required, Validators.email]),
     password: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(6)]),
     nomeCompleto: this.fb.nonNullable.control('', [Validators.required, Validators.maxLength(100)]),
-    phoneNumber: this.fb.control<string | null>(''),
-  });
+    phoneNumber: this.fb.control<string | null>('')
+  })
 
   submit(): void {
     if (this.form.invalid) {
@@ -33,37 +35,39 @@ export class RegisterPage {
     }
 
     this.isLoading.set(true);
-    this.succesMessage.set('');
+    this.successMessage.set('');
+    this.errorMessage.set('');
 
     const payload = {
       ...this.form.getRawValue(),
-      phoneNumber: this.form.getRawValue().phoneNumber || null,
+      phoneNumber: this.form.getRawValue().phoneNumber || null
     };
 
     this.authService.register(payload).subscribe({
       next: (response) => {
         this.isLoading.set(false);
-        this.succesMessage.set(response.message);
+        this.successMessage.set(response.message);
         setTimeout(() => void this.router.navigate(['/login']), 900);
       },
 
       error: (error: unknown) => {
         this.isLoading.set(false);
-        this.succesMessage.set(this.extractErrorMessage(error));
-      },
+        this.errorMessage.set(this.exctractErrorMessage(error));
+      }
     });
   }
-
-  private extractErrorMessage(error: unknown): string {
-    if (error instanceof HttpErrorResponse) {
-      if (Array.isArray(error.error) && error.error.length > 0) {
-        return error.error
-          .map((item: { description?: string }) => item.description ?? 'Errore')
-          .join(' | ');
+  private exctractErrorMessage(error: unknown): string {
+    if(error instanceof HttpErrorResponse)
+    {
+      if(Array.isArray(error.error) && error.error.length > 0){
+        return error.error.map((item: {description?: string}) => item.description ?? 'Errore').join('|');
       }
 
-      return error.error?.message ?? 'Registrazione non riuscita.';
+      return error.error?.message ??  'Registrazione non riuscita';
     }
-    return 'Registrazione non riuscita';
+    return 'Registrazione non riuscita'
   }
+
+
+
 }

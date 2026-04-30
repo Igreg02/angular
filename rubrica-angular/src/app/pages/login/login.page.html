@@ -1,1 +1,44 @@
-<p>login works!</p>
+<section>
+    <h1 class="page-title"> Accedi</h1>
+    <p class="page-subtitle"> Usa le credenziali del backend per entrare nella applicazione</p>
+
+    <div class="grid grid-2">
+        <div class="card">
+            @if(errorMessage()){
+                <div class="alert alert-warning"> {{ errorMessage() }}</div>
+            }
+
+            <form class="form-grid" [formGroup]="form" (ngSubmit)="submit()">
+                <div>
+                    <label for="email"> Email</label>
+                    <input id="email" type="email" formControlName="email" />
+                </div>
+
+                <div>
+                    <label for="password"> Password</label>
+                    <input id="password" type="password" formControlName="password" />
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-primary" type="submit" [disabled]="isLoading()">
+                        {{ isLoading() ? "Accesso in corso" : "Login" }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2> Utenti demo</h2>
+            <div class="list">
+                <div class="list-item"><span> Admin</span><strong>admin&#64;email.com/ 123456</strong></div>
+                <div class="list-item"><span> Editor</span><strong>editor&#64;email.com/ 123456</strong></div>
+                <div class="list-item"><span> User</span><strong>user&#64;email.com/ 123456</strong></div>
+            </div>
+
+            <p class="muted"> Non hai un account?</p>
+            <div class="btn-row">
+                <a class="btn btn-secondary" routerLink="/register"> Vai alla registrazione</a>
+            </div>
+        </div>
+    </div>
+</section>

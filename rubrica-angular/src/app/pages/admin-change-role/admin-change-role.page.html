@@ -1,1 +1,46 @@
-<p>admin-change-role works!</p>
+<section>
+    <h1 class= "page-title"> Cambio ruolo utente</h1>
+    <p class ="page-subtitle"> Pagina visibile solo al ruolo<strong> Admin </strong></p>
+
+    <div class ="grid grid-2">
+        <article class ="card">
+            @if(successMessage()){
+                <div class ="alert alert-success">{{ successMessage() }}</div>
+            }
+
+            @if(errorMessage()){
+                <div class="alert alert-warning"> {{ errorMessage()}}</div>
+            }
+            <form class=" form-grid" [formGroup] = "form" (ngSubmit) ="submit()">
+            <div>
+                <label for ="email"> Email utente</label>
+                <input id ="email" type="email" formControlName = "email" />
+            </div>
+
+            <div>
+                <label for ="newRole"> Nuovo ruolo</label>
+                <select id="newRole" formControlName = "newRole">
+                    @for(role of roles; track role){
+                        <option[value]="role"> {{role}}</option>
+                    }
+                </select>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-primary" type ="submit" [disabled] = "isSubmitting()">
+                    {{ isSubmitting() ? "Aggiornamento..." : "Aggiorna ruolo" }}
+                </button>
+            </form>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2> Utenti demo</h2>
+            <div class="list">
+                <div class="list-item"> <span>Admin</span><strong>admin&#64;email.com</strong></div>
+                <div class="list-item"> <span>Editor</span><strong>editor&#64;email.com</strong></div>
+                <div class="list-item"> <span>User</span><strong>User&#64;email.com</strong></div>
+            </div>
+        </article>
+    </div>
+</section>
