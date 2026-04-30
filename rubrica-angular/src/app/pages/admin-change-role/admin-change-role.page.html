@@ -21,7 +21,7 @@
                 <label for ="newRole"> Nuovo ruolo</label>
                 <select id="newRole" formControlName = "newRole">
                     @for(role of roles; track role){
-                        <option[value]="role"> {{role}}</option>
+                        <option [value]="role"> {{role}}</option>
                     }
                 </select>
             </div>
@@ -30,10 +30,6 @@
                 <button class="btn btn-primary" type ="submit" [disabled] = "isSubmitting()">
                     {{ isSubmitting() ? "Aggiornamento..." : "Aggiorna ruolo" }}
                 </button>
-            </form>
-            </div>
-        </article>
-
         <article class="card">
             <h2> Utenti demo</h2>
             <div class="list">
@@ -43,4 +39,3 @@
             </div>
         </article>
     </div>
-</section>

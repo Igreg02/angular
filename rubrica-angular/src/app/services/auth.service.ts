@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { environment } from '../../environment/environments';
+import { enviroment } from '../../enviroments/enviroment';
 import { AuthResponse } from '../models/auth-response.model';
 import { LoginRequest } from '../models/login.model';
 import { RegisterRequest } from '../models/register.model';
@@ -22,12 +22,12 @@ export class AuthService {
 
   login(payload: LoginRequest): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${environment.apiBaseUrl}/Auth/login`, payload)
+      .post<AuthResponse>(`${enviroment.apiBaseUrl}/Auth/login`, payload)
       .pipe(tap((response) => this.setSession(response)));
   }
 
   register(payload: RegisterRequest): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${environment.apiBaseUrl}/Auth/register`, payload);
+    return this.http.post<{ message: string }>(`${enviroment.apiBaseUrl}/Auth/register`, payload);
 
   }
 

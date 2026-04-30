@@ -134,7 +134,7 @@ export class InterestsPage {
     this.editingId.set(null);
   }
 
-  trackbyId(_: number, item: Interest): number {
+  trackById(_: number, item: Interest): number {
     return item.id
   }
 

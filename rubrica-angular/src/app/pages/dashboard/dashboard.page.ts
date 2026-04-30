@@ -14,7 +14,7 @@ export class DashboardPage {
 
   readonly user = this.authService.currentUser;
 
-  candEditInterests(): boolean{
+  canEditInterests(): boolean{
     return this.authService.hasAnyRole(['Admin', 'Editor']);
   }
 
