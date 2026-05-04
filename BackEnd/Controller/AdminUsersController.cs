@@ -12,10 +12,13 @@ namespace RubricaSemplice.Api.Controllers;
 public class AdminUsersController : ControllerBase
 {
     private readonly UserRoleService _userRoleService;
+    private readonly InterestService _interestService;
+
     
-    public AdminUsersController(UserRoleService userRoleService)
+    public AdminUsersController(UserRoleService userRoleService, InterestService interestService)
     {
         _userRoleService = userRoleService;
+        _interestService = interestService;
     }
 
     [HttpPut("change-role")]
@@ -30,5 +33,12 @@ public class AdminUsersController : ControllerBase
         {message = "Ruolo aggiornato correttamente",
         email = dto.Email,
         role = newRole});
+    }
+
+    [HttpGet("showallinterests")]
+    public async Task<IActionResult> GetAllInterestsWithUsers()
+    {
+        List<InterestWithUserDto> interests = await _interestService.GetAllWithUsersAsync();
+        return Ok(interests);
     }
 }

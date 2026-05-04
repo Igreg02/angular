@@ -156,4 +156,26 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
 
         return true;
     }
+    public async Task<List<InterestWithUserDto>> GetAllWithUsersAsync()
+    {
+        List<InterestWithUserDto> result = new List<InterestWithUserDto>();
+        List<Interest> allInterests = _context.Interests.ToList();
+
+        foreach (var interest in allInterests)
+        {
+            var user = await _context.Users.FindAsync(interest.UserId);
+            if (user != null)
+            {
+                result.Add(new InterestWithUserDto
+                {
+                    Id = interest.Id,
+                    Nome = interest.Nome,
+                    UserName = user.NomeCompleto,
+                    UserEmail = user.Email ?? ""
+                });
+            }
+        }
+
+        return result;
+    }
 }

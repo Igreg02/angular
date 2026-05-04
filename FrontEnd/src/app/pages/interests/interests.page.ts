@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { InterestService } from '../../services/interest.service';
 import { Interest } from '../../models/interest.models';
+import { InterestWithUser } from '../../models/interest-with-user.model';
 
 @Component({
   selector: 'app-interests',
@@ -18,11 +19,13 @@ export class InterestsPage {
   private readonly interestService = inject(InterestService);
 
   readonly interests = signal<Interest[]>([]);
+  readonly allInterests = signal<InterestWithUser[]>([]);
   readonly isLoading = signal(false);
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
   readonly editingId = signal<number | null>(null);
+  readonly isAdmin = computed(()=> this.authService.hasRole("Admin"));
 
   readonly form = this.fb.nonNullable.group({
     nome: ['', [Validators.required, Validators.maxLength(100)]]
@@ -30,6 +33,9 @@ export class InterestsPage {
 
   constructor() {
     this.loadInterests();
+    if (this.isAdmin()) {
+      this.loadAllInterests();
+    }
   }
 
   canEdit(): boolean {
@@ -50,6 +56,17 @@ export class InterestsPage {
         this.errorMessage.set(
           this.extractErrorMessage(error, 'Impossibile caricare gli interessi')
         );
+      }
+    });
+  }
+
+  loadAllInterests(): void {
+    this.interestService.getAllForAdmin().subscribe({
+      next: (items) => {
+        this.allInterests.set(items);
+      },
+      error: (error: unknown) => {
+        console.error('Error loading all interests', error);
       }
     });
   }

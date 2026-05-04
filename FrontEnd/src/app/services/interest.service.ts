@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environment/environments';
 import { Interest } from '../models/interest.models';
 import { InterestCreateRequest } from '../models/interest-create.model';
+import { InterestWithUser } from '../models/interest-with-user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -35,5 +36,10 @@ export class InterestService {
   delete(id:number): Observable<void>
   {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  getAllForAdmin(): Observable<InterestWithUser[]>
+  {
+    return this.http.get<InterestWithUser[]>(`${environment.apiBaseUrl}/AdminUsers/showallinterests`);
   }
 }
