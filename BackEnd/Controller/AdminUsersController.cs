@@ -27,8 +27,8 @@ public class AdminUsersController : ControllerBase
             return BadRequest(new{message = "utente o ruolo non valido."});
         }
         return Ok(new
-        {messsage ="Ruolo aggiornato correttamente",
-        email= dto.Email,
+        {message = "Ruolo aggiornato correttamente",
+        email = dto.Email,
         role = newRole});
     }
 }
