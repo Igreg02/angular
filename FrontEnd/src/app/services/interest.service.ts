@@ -42,4 +42,9 @@ export class InterestService {
   {
     return this.http.get<InterestWithUser[]>(`${environment.apiBaseUrl}/AdminUsers/showallinterests`);
   }
+
+  getByUserId(userId: string): Observable<Interest[]>
+  {
+    return this.http.get<Interest[]>(`${this.baseUrl}/user/${userId}`);
+  }
 }

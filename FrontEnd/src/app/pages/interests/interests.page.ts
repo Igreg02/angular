@@ -2,8 +2,10 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { InterestService } from '../../services/interest.service';
+import { AdminService } from '../../services/admin.service';
 import { Interest } from '../../models/interest.models';
 import { InterestWithUser } from '../../models/interest-with-user.model';
+import { UserProfile } from '../../models/user-profile.model';
 
 @Component({
   selector: 'app-interests',
@@ -17,9 +19,13 @@ export class InterestsPage {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly interestService = inject(InterestService);
+  private readonly adminService = inject(AdminService);
 
   readonly interests = signal<Interest[]>([]);
   readonly allInterests = signal<InterestWithUser[]>([]);
+  readonly users = signal<UserProfile[]>([]);
+  readonly selectedUserInterests = signal<Interest[]>([]);
+  readonly selectedUserId = signal<string | null>(null);
   readonly isLoading = signal(false);
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
@@ -35,6 +41,7 @@ export class InterestsPage {
     this.loadInterests();
     if (this.isAdmin()) {
       this.loadAllInterests();
+      this.loadUsers();
     }
   }
 
@@ -71,6 +78,46 @@ export class InterestsPage {
     });
   }
 
+  loadUsers(): void {
+    this.adminService.getAllUsers().subscribe({
+      next: (users) => {
+        this.users.set(users);
+      },
+      error: (error: unknown) => {
+        console.error('Error loading users', error);
+        this.errorMessage.set('Errore nel caricamento degli utenti');
+      }
+    });
+  }
+
+  selectUser(userId: string): void {
+    this.selectedUserId.set(userId);
+    this.loadUserInterests(userId);
+    this.resetForm();
+  }
+
+  onUserSelected(userId: string): void {
+    if (!userId) {
+      this.selectedUserId.set(null);
+      this.selectedUserInterests.set([]);
+      return;
+    }
+
+    this.selectUser(userId);
+  }
+
+  loadUserInterests(userId: string): void {
+    this.interestService.getByUserId(userId).subscribe({
+      next: (interests) => {
+        this.selectedUserInterests.set(interests);
+      },
+      error: (error: unknown) => {
+        console.error('Error loading user interests', error);
+        this.errorMessage.set('Errore nel caricamento degli interessi dell\'utente');
+      }
+    });
+  }
+
   submit(): void {
     if (this.form.invalid || !this.canEdit()) {
       this.form.markAllAsTouched();
@@ -82,10 +129,14 @@ export class InterestsPage {
     this.successMessage.set('');
 
     const formValue = this.form.getRawValue();
+    const payload = {
+      ...formValue,
+      userId: this.selectedUserId() || undefined
+    };
 
     const request$ = this.editingId()
-      ? this.interestService.update(this.editingId()!, formValue)
-      : this.interestService.create(formValue);
+      ? this.interestService.update(this.editingId()!, payload)
+      : this.interestService.create(payload);
 
     request$.subscribe({
       next: () => {
@@ -97,6 +148,9 @@ export class InterestsPage {
         this.loadInterests();
         if (this.isAdmin()) {
           this.loadAllInterests();
+          if (this.selectedUserId()) {
+            this.loadUserInterests(this.selectedUserId()!);
+          }
         }
       },
       error: (error: unknown) => {
@@ -143,6 +197,9 @@ export class InterestsPage {
         this.loadInterests();
         if (this.isAdmin()) {
           this.loadAllInterests();
+          if (this.selectedUserId()) {
+            this.loadUserInterests(this.selectedUserId()!);
+          }
         }
       },
       error: (error: unknown) => {

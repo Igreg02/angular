@@ -1,6 +1,7 @@
 export interface UserProfile{
-    id          : string,
-    nomeCompleto: string;
+    userId      : string;
     email       : string;
-    phoneNumber?: string | null;
+    nomeCompleto: string;
+    phoneNumber?: string;
+    abilitato  : boolean;
 }

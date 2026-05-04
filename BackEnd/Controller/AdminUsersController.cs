@@ -41,4 +41,10 @@ public class AdminUsersController : ControllerBase
         List<InterestWithUserDto> interests = await _interestService.GetAllWithUsersAsync();
         return Ok(interests);
     }
-}
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _userRoleService.GetAllUsersAsync();
+        return Ok(users);
+    }}

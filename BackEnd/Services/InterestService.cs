@@ -59,8 +59,10 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
         return dto;
     }
 
-    public async Task<InterestDto?> CreateAsync(InterestCreateDto dto, string userId) // metodo asincrono per la creazione di un interesse
+    public async Task<InterestDto?> CreateAsync(InterestCreateDto dto, string userId, bool isAdmin = false) // metodo asincrono per la creazione di un interesse
     {
+        string targetUserId = isAdmin && !string.IsNullOrEmpty(dto.UserId) ? dto.UserId : userId;
+
         // Evitiamo interessi duplicati per lo stesso utente
         List<Interest> allInterests = _context.Interests.ToList();
 
@@ -68,7 +70,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
         {
             Interest currentInterest = allInterests[i];
 
-            if (currentInterest.UserId == userId)
+            if (currentInterest.UserId == targetUserId)
             {
                 bool sameName = string.Equals(currentInterest.Nome, dto.Nome, StringComparison.OrdinalIgnoreCase);
 
@@ -83,7 +85,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
         // creazione del nuovo interesse.
         Interest interest = new Interest();
         interest.Nome = dto.Nome;
-        interest.UserId = userId;
+        interest.UserId = targetUserId;
 
         _context.Interests.Add(interest);
         await _context.SaveChangesAsync(); // salva le modifiche apportate al database.

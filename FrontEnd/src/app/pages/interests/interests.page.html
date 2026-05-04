@@ -12,6 +12,20 @@
     <div class="alert alert-success">{{ successMessage() }}</div>
     }
 
+    @if (isAdmin()) {
+    <div>
+        <h3>Seleziona utente per modificare i suoi interessi</h3>
+        <label for="Utenti"> Seleziona un utente </label>
+        <select id="Utenti" (change)="onUserSelected(($event.target as HTMLSelectElement).value)">
+            <option value="">Seleziona un utente</option>
+            @for (user of users(); track user.userId) {
+            <option [value]="user.userId">{{ user.nomeCompleto }} ({{ user.email }})</option>
+            }
+        </select>
+    </div>
+
+    }
+
     <div class="grid grid-2">
         <article class="card">
             <h2>Lista interessi</h2>
@@ -44,6 +58,38 @@
             </div>
             }
         </article>
+
+        @if (selectedUserId()) {
+        <article class="card">
+            <h2>Interessi dell'utente selezionato</h2>
+
+            @if (selectedUserInterests().length === 0) {
+            <p class="muted">Nessun interesse presente per questo utente</p>
+            } @else {
+            <div class="list">
+                @for (item of selectedUserInterests(); track trackById($index, item)) {
+                <div class="list-item">
+                    <div>
+                        <strong>{{ item.nome }}</strong>
+                        <div class="muted">ID: {{ item.id }}</div>
+                    </div>
+
+                    @if (canEdit()) {
+                    <div class="btn-row">
+                        <button class="btn btn-secondary" type="button" (click)="startEdit(item)">
+                            Modifica
+                        </button>
+                        <button class="btn btn-danger" type="button" (click)="delete(item)">
+                            Elimina
+                        </button>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </article>
+        }
 
         <article class="card">
             <h2>{{ editingId() ? 'Modifica interesse' : 'Nuovo interesse' }}</h2>

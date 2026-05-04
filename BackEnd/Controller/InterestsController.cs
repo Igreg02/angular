@@ -50,9 +50,10 @@ public class InterestsController : ControllerBase
     [Authorize(Roles = UserRoles.AdminOrEditor)]
     public async Task<IActionResult> Create([FromBody] InterestCreateDto dto) // IActionResult è una classe di Identity. Frombody significa che riceve il json e lo converte in ciò che il dto farà vedere
     {
-        string userId = GetUserIdFromToken(); 
+        string userId = GetUserIdFromToken();
+        bool isAdmin = User.IsInRole(UserRoles.Admin);
 
-        InterestDto? result = await _interestService.CreateAsync(dto, userId);
+        InterestDto? result = await _interestService.CreateAsync(dto, userId, isAdmin);
 
         if (result == null)
         {
@@ -95,6 +96,14 @@ public class InterestsController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("user/{userId}")]
+    [Authorize(Roles = UserRoles.Admin)]
+    public async Task<IActionResult> GetInterestsByUserId(string userId)
+    {
+        List<InterestDto> interests = await _interestService.GetAllByUserIdAsync(userId);
+        return Ok(interests);
     }
 
     private string GetUserIdFromToken()

@@ -48,4 +48,25 @@ public class UserRoleService
 
         return dto.NewRole;
     }
+
+    public async Task<List<UserProfileDto>> GetAllUsersAsync()
+    {
+        var users = _userManager.Users.ToList();
+        var result = new List<UserProfileDto>();
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            result.Add(new UserProfileDto
+            {
+                UserId = user.Id,
+                Email = user.Email ?? "",
+                NomeCompleto = user.NomeCompleto,
+                PhoneNumber = user.PhoneNumber,
+                Abilitato = user.Abilitato
+            });
+        }
+
+        return result;
+    }
 }
