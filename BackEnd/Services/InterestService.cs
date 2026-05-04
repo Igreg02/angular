@@ -95,7 +95,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
         return result;
     }
 
-    public async Task<InterestDto?> UpdateAsync(int id, InterestCreateDto dto, string userId) // metodo per la modifica di un interesse.
+    public async Task<InterestDto?> UpdateAsync(int id, InterestCreateDto dto, string userId, bool isAdmin = false) // metodo per la modifica di un interesse.
     {
         Interest? interest = await _context.Interests.FindAsync(id);
 
@@ -104,7 +104,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
             return null;
         }
 
-        if (interest.UserId != userId)
+        if (!isAdmin && interest.UserId != userId)
         {
             return null;
         }
@@ -116,7 +116,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
         {
             Interest currentInterest = allInterests[i];
 
-            if (currentInterest.UserId == userId && currentInterest.Id != id)
+            if (currentInterest.UserId == interest.UserId && currentInterest.Id != id)
             {
                 bool sameName = string.Equals(currentInterest.Nome, dto.Nome, StringComparison.OrdinalIgnoreCase);
 
@@ -137,7 +137,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
         return result;
     }
 
-    public async Task<bool> DeleteAsync(int id, string userId) // metodo per la cancellazione di un interesse.
+    public async Task<bool> DeleteAsync(int id, string userId, bool isAdmin = false) // metodo per la cancellazione di un interesse.
     {
         Interest? interest = await _context.Interests.FindAsync(id);
 
@@ -146,7 +146,7 @@ public class InterestService // gestisce la logica delle operazioni CRUD effettu
             return false;
         }
 
-        if (interest.UserId != userId)
+        if (!isAdmin && interest.UserId != userId)
         {
             return false;
         }

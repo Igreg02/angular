@@ -68,8 +68,9 @@ public class InterestsController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] InterestCreateDto dto)
     {
         string userId = GetUserIdFromToken();
+        bool isAdmin = User.IsInRole(UserRoles.Admin);
 
-        InterestDto? result = await _interestService.UpdateAsync(id, dto, userId);
+        InterestDto? result = await _interestService.UpdateAsync(id, dto, userId, isAdmin);
         if (result == null)
         {
             return NotFound(new { message = "Interesse non trovato" });
@@ -84,8 +85,9 @@ public class InterestsController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         string userId = GetUserIdFromToken();
+        bool isAdmin = User.IsInRole(UserRoles.Admin);
 
-        bool deleted = await _interestService.DeleteAsync(id, userId);
+        bool deleted = await _interestService.DeleteAsync(id, userId, isAdmin);
 
         if (!deleted)
         {

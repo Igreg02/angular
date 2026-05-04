@@ -72,11 +72,27 @@
         </article>
         @if (isAdmin()) {
         <article class="card">
-            <h2>Ineressi di tutti</h2>
+            <h2>Interessi di tutti</h2>
             <div class="list">
-                <div class="list-item"><span>Persona</span><span class="badge">Interesse</span></div>
-                @for(interest of allInterests(); track interest.id){
-                <div class="list-item"><span>{{interest.userName}}</span><span class="badge">{{interest.nome}}</span></div>
+                @for (interest of allInterests(); track interest.id) {
+                <div class="list-item">
+                    <div>
+                        <strong>{{ interest.userName }}</strong>
+                        <div class="muted">{{ interest.userEmail }}</div>
+                        <div class="badge">{{ interest.nome }}</div>
+                    </div>
+
+                    @if (canEdit()) {
+                    <div class="btn-row">
+                        <button class="btn btn-secondary" type="button" (click)="startEdit(interest)">
+                            Modifica
+                        </button>
+                        <button class="btn btn-danger" type="button" (click)="delete(interest)">
+                            Elimina
+                        </button>
+                    </div>
+                    }
+                </div>
                 }
             </div>
         </article>

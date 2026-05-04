@@ -95,6 +95,9 @@ export class InterestsPage {
         );
         this.resetForm();
         this.loadInterests();
+        if (this.isAdmin()) {
+          this.loadAllInterests();
+        }
       },
       error: (error: unknown) => {
         this.isSubmitting.set(false);
@@ -105,23 +108,23 @@ export class InterestsPage {
     });
   }
 
-  startEdit(item: Interest): void {
+  startEdit(item: Interest | InterestWithUser): void {
     if (!this.canEdit()) return;
 
     this.editingId.set(item.id);
     this.form.patchValue({
       nome: item.nome
-    })
+    });
     this.successMessage.set('');
     this.errorMessage.set('');
   }
 
-  delete(item: Interest): void {
+  delete(item: Interest | InterestWithUser): void {
     if (!this.canEdit()) {
       return;
     }
 
-    const confirmed = confirm(`Eliminare l'interesse \"${item.nome}\"?`)
+    const confirmed = confirm(`Eliminare l'interesse \"${item.nome}\"?`);
 
     if (!confirmed) {
       return;
@@ -138,10 +141,12 @@ export class InterestsPage {
         }
 
         this.loadInterests();
+        if (this.isAdmin()) {
+          this.loadAllInterests();
+        }
       },
       error: (error: unknown) => {
         this.errorMessage.set(this.extractErrorMessage(error, 'Eliminazione non riuscita'));
-
       }
     });
   }
@@ -151,8 +156,8 @@ export class InterestsPage {
     this.editingId.set(null);
   }
 
-  trackById(_: number, item: Interest): number {
-    return item.id
+  trackById(_: number, item: Interest | InterestWithUser): number {
+    return item.id;
   }
 
   private extractErrorMessage(error: unknown, fallback: string): string {
