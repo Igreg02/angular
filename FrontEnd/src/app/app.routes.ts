@@ -32,7 +32,7 @@ export const routes: Routes = [
     {
         path: 'admin/change-role',
         canActivate: [authGuard, roleGuard],
-        data: { roles: ['admin'] },
+        data: { roles: ['Admin'] },
         loadComponent: () => import('./pages/admin-change-role/admin-change-role.page').then((m) => m.AdminChangeRolePage)
     },
     {
